@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
+//@EnableWebSecurity(debug = true)
 public class MessengerApplication {
 
     public static void main(String[] args) {

@@ -5,12 +5,11 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 @Controller
-@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CustomWsController {
 
     SimpMessagingTemplate messagingTemplate;
@@ -24,7 +23,7 @@ public class CustomWsController {
     public String sendMessage(Message message) {
         // Handle the incoming message and create a response
 
-        sendMessage("/topic/messages","","1234");
+        sendMessage("/topic/messages", "", "1234");
 
         System.out.println("ОТПРАВИЛ");
         return "1234";
@@ -32,7 +31,7 @@ public class CustomWsController {
 
     private void sendMessage(String destination, String sessionId, String message) {
         messagingTemplate.convertAndSend(
-                destination,message
+                destination, message
         );
     }
 }
