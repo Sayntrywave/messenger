@@ -29,7 +29,7 @@ public class RegistrationService {
             throw new UserNotCreatedException("login <" + login + "> has already been taken");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setInBan(false);
+        user.setIsInBan(false);
         repository.save(user);
 
     }

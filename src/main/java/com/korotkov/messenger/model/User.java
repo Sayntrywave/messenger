@@ -31,7 +31,7 @@ public class User {
     private String email;
 
     @Column(name = "is_in_ban")
-    private boolean isInBan;
+    private Boolean isInBan;
 
 
 }

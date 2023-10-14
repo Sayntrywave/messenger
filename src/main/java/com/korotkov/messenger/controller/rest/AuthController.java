@@ -1,4 +1,4 @@
-package com.korotkov.messenger.controller;
+package com.korotkov.messenger.controller.rest;
 
 import com.korotkov.messenger.dto.request.AuthenticationRequest;
 import com.korotkov.messenger.dto.request.RegistrationRequest;
@@ -19,14 +19,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class TestController {
+public class AuthController {
 
     UserService userService;
     AuthenticationManager authenticationManager;
@@ -38,18 +36,12 @@ public class TestController {
 
 
     @Autowired
-    public TestController(UserService userService, AuthenticationManager authenticationManager, ModelMapper modelMapper, RegistrationService registrationService, JWTUtil jwtUtil) {
+    public AuthController(UserService userService, AuthenticationManager authenticationManager, ModelMapper modelMapper, RegistrationService registrationService, JWTUtil jwtUtil) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.modelMapper = modelMapper;
         this.registrationService = registrationService;
         this.jwtUtil = jwtUtil;
-    }
-
-
-    @GetMapping("/hello")
-    public String getHello() {
-        return "hello";
     }
 
     @PostMapping("/register")
