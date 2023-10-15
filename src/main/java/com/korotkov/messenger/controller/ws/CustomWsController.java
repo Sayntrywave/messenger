@@ -26,7 +26,7 @@ public class CustomWsController {
     public void sendMessage(MessageDtoRequest message) {
         // Handle the incoming message and create a response
         System.out.println("ОТПРАВИЛ");
-        sendMessage("/topic/messages", message);
+        sendMessage("/topic/messages/" + message.getNickname(), message);
 
     }
     private void sendMessage(String destination, MessageDtoRequest message) {

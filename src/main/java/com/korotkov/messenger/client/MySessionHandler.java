@@ -13,7 +13,7 @@ import java.lang.reflect.Type;
 public class MySessionHandler extends StompSessionHandlerAdapter {
     @Override
     public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
-        session.subscribe("/topic/messages", this);
+        session.subscribe("/topic/messages/nikitos", this);
         MessageDtoRequest messageDtoRequest = new MessageDtoRequest("nikitos","i'm here");
         session.send("/chat", messageDtoRequest);
         System.out.println("hello");
