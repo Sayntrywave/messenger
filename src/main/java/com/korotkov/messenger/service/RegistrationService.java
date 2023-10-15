@@ -6,6 +6,7 @@ import com.korotkov.messenger.model.User;
 import com.korotkov.messenger.repository.EmailRepository;
 import com.korotkov.messenger.repository.UserRepository;
 import com.korotkov.messenger.util.UserNotCreatedException;
+import jakarta.validation.constraints.Email;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
@@ -41,10 +42,15 @@ public class RegistrationService {
 
     @Transactional
     public String register(EmailUser user) {
+        //todo handle exception
+
         String login = user.getLogin();
-        //todo add check for login
         if (repository.existsUserByLogin(login)) {
             throw new UserNotCreatedException("login <" + login + "> has already been taken");
+        }
+        String email = user.getEmail();
+        if (repository.existsUserByEmail(email)) {
+            throw new UserNotCreatedException("email <" + email + "> has already been taken");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setIsInBan(false);
@@ -54,13 +60,25 @@ public class RegistrationService {
     }
 
     @Transactional
-    public void activate(String token){
-        String email = jwtService.validateTokenAndRetrieveClaim(token, "email");
+    public void activate(String token, Boolean isInBan, String email){
+        String userEmail = jwtService.validateTokenAndRetrieveClaim(token, "email");
+        if(isInBan == null && email == null){
 
-        EmailUser emailUser = emailRepository.findEmailUserByEmail(email).orElseThrow();
-        User map = modelMapper.map(emailUser, User.class);
-        repository.save(map);
-        emailRepository.delete(emailUser);
+            EmailUser emailUser = emailRepository.findEmailUserByEmail(userEmail).orElseThrow();
+            User map = modelMapper.map(emailUser, User.class);
+            repository.save(map);
+            emailRepository.delete(emailUser);
+        }
+        else if(isInBan != null){
+            User user = repository.findUserByEmail(userEmail).orElseThrow();
+            user.setIsInBan(isInBan);
+            repository.save(user);
+        }
+        else {
+            User user = repository.findUserByEmail(userEmail).orElseThrow();
+            user.setEmail(email);
+            repository.save(user);
+        }
     }
 
 }

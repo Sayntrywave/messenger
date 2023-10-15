@@ -58,6 +58,14 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @DeleteMapping("/user/delete")
+    public ResponseEntity<HttpStatus> deleteUser(){
+
+        userService.delete();
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @GetMapping("/user/messages")
     public ResponseEntity<List<MessageResponse>> getMessages(@RequestParam(value = "nick",required = false) String nickname){
         List<Message> messagesFrom = messageService.getMessagesWith(userService.getCurrentUser().getId(), userService.findByLogin(nickname).getId());

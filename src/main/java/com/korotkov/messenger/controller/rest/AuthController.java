@@ -11,6 +11,7 @@ import com.korotkov.messenger.service.RegistrationService;
 import com.korotkov.messenger.service.UserService;
 import com.korotkov.messenger.util.UserNotCreatedException;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
@@ -64,10 +65,10 @@ public class AuthController {
 
 
     @GetMapping("/activate")
-    public ResponseEntity<HttpStatus> activate(@RequestParam(value = "t") String token){
-        //        LoginResponse map = modelMapper.map(currentUser, LoginResponse.class);
-//        map.setToken(token);
-        registrationService.activate(token);
+    public ResponseEntity<HttpStatus> activate(@RequestParam(value = "t") String token,
+                                               @RequestParam(value = "is-in-ban", required = false) Boolean isInBan,
+                                               @Email @RequestParam(value = "email", required = false) String email){
+        registrationService.activate(token,isInBan,email);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

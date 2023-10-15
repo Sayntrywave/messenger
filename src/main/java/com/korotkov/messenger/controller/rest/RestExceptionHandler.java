@@ -1,6 +1,7 @@
 package com.korotkov.messenger.controller.rest;
 
 
+import com.korotkov.messenger.util.UserNotCreatedException;
 import com.korotkov.messenger.util.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,10 @@ public class RestExceptionHandler {
 
     @ExceptionHandler
     private ResponseEntity<String> handleException(UserNotFoundException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler
+    private ResponseEntity<String> handleException(UserNotCreatedException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }

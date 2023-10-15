@@ -13,6 +13,10 @@ spring:
     protocol: smtps
     test-connection: true
 
+server:
+  error:
+    include-message: always
+
 
 
 jwt:
