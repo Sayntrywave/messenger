@@ -18,11 +18,11 @@ public class Message {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "user_from_id",referencedColumnName = "id")
+    @JoinColumn(name = "user_from_id", referencedColumnName = "id")
     private User userFrom;
 
     @ManyToOne
-    @JoinColumn(name = "user_to_id",referencedColumnName = "id")
+    @JoinColumn(name = "user_to_id", referencedColumnName = "id")
     private User userTo;
 
     @Column(name = "message")

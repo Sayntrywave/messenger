@@ -6,7 +6,6 @@ import com.korotkov.messenger.model.User;
 import com.korotkov.messenger.repository.EmailRepository;
 import com.korotkov.messenger.repository.UserRepository;
 import com.korotkov.messenger.util.UserNotCreatedException;
-import jakarta.validation.constraints.Email;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
@@ -17,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(readOnly = true)
-@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class RegistrationService {
 
     UserRepository repository;
@@ -56,25 +55,23 @@ public class RegistrationService {
         user.setIsInBan(false);
         emailRepository.save(user);
 
-        return jwtService.generateToken(user.getEmail(),"email");
+        return jwtService.generateToken(user.getEmail(), "email");
     }
 
     @Transactional
-    public void activate(String token, Boolean isInBan, String email){
+    public void activate(String token, Boolean isInBan, String email) {
         String userEmail = jwtService.validateTokenAndRetrieveClaim(token, "email");
-        if(isInBan == null && email == null){
+        if (isInBan == null && email == null) {
 
             EmailUser emailUser = emailRepository.findEmailUserByEmail(userEmail).orElseThrow();
             User map = modelMapper.map(emailUser, User.class);
             repository.save(map);
             emailRepository.delete(emailUser);
-        }
-        else if(isInBan != null){
+        } else if (isInBan != null) {
             User user = repository.findUserByEmail(userEmail).orElseThrow();
             user.setIsInBan(isInBan);
             repository.save(user);
-        }
-        else {
+        } else {
             User user = repository.findUserByEmail(userEmail).orElseThrow();
             user.setEmail(email);
             repository.save(user);

@@ -48,7 +48,7 @@ public class MessageService {
         User userTo = userRepository.findUserByLogin(to).orElseThrow(() -> new UserNotFoundException("can't find user " + to));
 
 
-        if (userTo.getIsOnlyFriends() && !userService.areFriends(userFrom.getLogin(),userTo.getLogin())) {
+        if (userTo.getIsOnlyFriends() && !userService.areFriends(userFrom.getLogin(), userTo.getLogin())) {
             throw new BadCredentialsException("this user can receive messages only from friends");
         }
 

@@ -62,7 +62,7 @@ public class UserController {
     }
 
     @DeleteMapping("/user/delete")
-    public ResponseEntity<HttpStatus> deleteUser(){
+    public ResponseEntity<HttpStatus> deleteUser() {
 
         userService.delete();
 
@@ -70,7 +70,7 @@ public class UserController {
     }
 
     @GetMapping("/user/messages")
-    public ResponseEntity<List<MessageResponse>> getMessages(@RequestParam(value = "nick",required = false) String nickname){
+    public ResponseEntity<List<MessageResponse>> getMessages(@RequestParam(value = "nick", required = false) String nickname) {
         List<Message> messagesFrom = messageService.getMessagesWith(userService.getCurrentUser().getId(), userService.findByLogin(nickname).getId());
 
         List<MessageResponse> collect = messagesFrom.stream()
@@ -81,27 +81,28 @@ public class UserController {
                                 .nicknameTo(message.getUserTo().getLogin())
                                 .build())
                 .collect(Collectors.toList());
-        return new ResponseEntity<>(collect,HttpStatus.OK);
+        return new ResponseEntity<>(collect, HttpStatus.OK);
     }
 
     @PostMapping("/user/add-friend-request")
-    public ResponseEntity<HttpStatus> addFriendRequest(@RequestBody @Valid FriendDtoRequest friendDtoRequest){
+    public ResponseEntity<HttpStatus> addFriendRequest(@RequestBody @Valid FriendDtoRequest friendDtoRequest) {
         userService.addFriendRequest(friendDtoRequest.getFriendLogin());
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
     @PostMapping("/user/accept-friend-request")
-    public ResponseEntity<HttpStatus> addFriendRequest(@RequestBody @Valid AcceptFriendRequest acceptFriendRequest){
+    public ResponseEntity<HttpStatus> addFriendRequest(@RequestBody @Valid AcceptFriendRequest acceptFriendRequest) {
         userService.acceptFriendRequest(acceptFriendRequest.getFriendLogin(), acceptFriendRequest.isAccepted());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/user/friends")
-    public ResponseEntity<List<UserDtoResponse>> getFriends(@RequestParam(value = "nick",required = false) String nickname){
+    public ResponseEntity<List<UserDtoResponse>> getFriends(@RequestParam(value = "nick", required = false) String nickname) {
         List<User> friends;
 
-        if(nickname != null){
+        if (nickname != null) {
             friends = userService.getFriends(nickname);
-        }else {
+        } else {
             friends = userService.getMyFriends();
         }
 
@@ -109,6 +110,6 @@ public class UserController {
         return new ResponseEntity<>(friends.stream().
                 map(user -> modelMapper.
                         map(user, UserDtoResponse.class))
-                .toList(),HttpStatus.OK);
+                .toList(), HttpStatus.OK);
     }
 }

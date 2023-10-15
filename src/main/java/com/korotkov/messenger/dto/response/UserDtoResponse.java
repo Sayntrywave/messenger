@@ -1,8 +1,8 @@
 package com.korotkov.messenger.dto.response;
 
 
-import lombok.*;
-import lombok.experimental.FieldDefaults;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor

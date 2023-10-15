@@ -13,18 +13,17 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Controller;
 
 @Controller
-@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CustomWsController {
 
     SimpMessagingTemplate messagingTemplate;
 
     MessageService messageService;
-    ModelMapper modelMapper;
+
     @Autowired
-    public CustomWsController(SimpMessagingTemplate messagingTemplate, MessageService messageService, ModelMapper modelMapper) {
+    public CustomWsController(SimpMessagingTemplate messagingTemplate, MessageService messageService) {
         this.messagingTemplate = messagingTemplate;
         this.messageService = messageService;
-        this.modelMapper = modelMapper;
     }
 
     @MessageMapping("/chat") // Defines the endpoint for receiving messages
@@ -33,17 +32,18 @@ public class CustomWsController {
         try {
             messageService.save(message);
             sendMessage("/topic/messages/" + message.getTo(), message);
-        }catch (UserNotFoundException | BadCredentialsException e){
+        } catch (UserNotFoundException | BadCredentialsException e) {
             message.setMessage(e.getMessage());
             message.setTo(message.getFrom());
             message.setFrom("server");
-            sendMessage("/topic/messages/" + message.getTo(),message);
+            sendMessage("/topic/messages/" + message.getTo(), message);
         }
     }
+
     private void sendMessage(String destination, MessageDtoRequest message) {
 
         messagingTemplate.convertAndSend(
-                destination,message
+                destination, message
         );
     }
 }

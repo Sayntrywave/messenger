@@ -3,14 +3,12 @@ package com.korotkov.messenger.client;
 import com.korotkov.messenger.dto.request.MessageDtoRequest;
 import com.korotkov.messenger.dto.response.LoginResponse;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.converter.CompositeMessageConverter;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.converter.StringMessageConverter;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSessionHandler;
-import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
 import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.socket.WebSocketHttpHeaders;
@@ -18,12 +16,10 @@ import org.springframework.web.socket.client.WebSocketClient;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 
-import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
 
@@ -49,19 +45,19 @@ public class ServiceClient {
 
         HttpEntity<Object> objectHttpEntity = new HttpEntity<>(map);
 
-        String token = restTemplate.postForEntity("http://localhost:8080/login",objectHttpEntity,LoginResponse.class).getBody().getToken();;
+        String token = restTemplate.postForEntity("http://localhost:8080/login", objectHttpEntity, LoginResponse.class).getBody().getToken();
 
-        webSocketHttpHeaders.add("Authorization",token);
+        webSocketHttpHeaders.add("Authorization", token);
         URI uri = new URI(url);
         StompSession stompSession = stompClient.connectAsync(uri, webSocketHttpHeaders, headers, sessionHandler).get();
 
         stompSession.subscribe("/topic/messages/" + nickname, sessionHandler);
         Scanner scanner = new Scanner(System.in);
 
-        while (true){
+        while (true) {
             String to = scanner.next();
             String message = scanner.nextLine();
-            MessageDtoRequest messageDtoRequest = new MessageDtoRequest(nickname,to,message);
+            MessageDtoRequest messageDtoRequest = new MessageDtoRequest(nickname, to, message);
             stompSession.send("/chat", messageDtoRequest);
         }
     }

@@ -16,11 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
 import java.util.Date;
-import java.util.Optional;
 
 @Service
 @Transactional
-@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JWTService {
 
     String secret;
@@ -39,10 +38,11 @@ public class JWTService {
 
 
     public String generateToken(String username) {
-        return generateToken(username,"username",60);
+        return generateToken(username, "username", 60);
     }
+
     public String generateToken(String claim, String claimName) {
-        return generateToken(claim,claimName,60*24);
+        return generateToken(claim, claimName, 60 * 24);
     }
 
     private String generateToken(String claim, String claimName, int expireIn) {
@@ -61,26 +61,27 @@ public class JWTService {
         return sign;
     }
 
-    public String validateTokenAndRetrieveClaim(String stringToken){
+    public String validateTokenAndRetrieveClaim(String stringToken) {
         Token token = tokenRepository.getTokenByToken(stringToken).orElseThrow(() -> new JWTVerificationException("такого токена не существует"));
         DecodedJWT jwt = verifier.verify(stringToken);
-        if(token.getIsExpired()){
+        if (token.getIsExpired()) {
             throw new TokenExpiredException("Токен невалидный", jwt.getExpiresAt().toInstant());
         }
 
         return jwt.getClaim("username").asString();
     }
-    public String validateTokenAndRetrieveClaim(String stringToken, String claimName){
+
+    public String validateTokenAndRetrieveClaim(String stringToken, String claimName) {
         Token token = tokenRepository.getTokenByToken(stringToken).orElseThrow(() -> new JWTVerificationException("такого токена не существует"));
         DecodedJWT jwt = verifier.verify(stringToken);
-        if(token.getIsExpired()){
+        if (token.getIsExpired()) {
             throw new TokenExpiredException("Токен невалидный", jwt.getExpiresAt().toInstant());
         }
 
         return jwt.getClaim(claimName).asString();
     }
 
-    public void invalidateToken(String stringToken){
+    public void invalidateToken(String stringToken) {
         Token token = tokenRepository.getTokenByToken(stringToken).orElseThrow();
         token.setIsExpired(true);
         tokenRepository.save(token);

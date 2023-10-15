@@ -44,6 +44,4 @@ public class User {
     private Boolean hideFriends;
 
 
-
-
 }

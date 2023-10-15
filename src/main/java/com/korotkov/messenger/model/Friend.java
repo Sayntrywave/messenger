@@ -12,7 +12,7 @@ import lombok.*;
 @ToString
 @Getter
 @Setter
-public class Friend{
+public class Friend {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,10 +20,10 @@ public class Friend{
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "first_id",referencedColumnName = "id")
+    @JoinColumn(name = "first_id", referencedColumnName = "id")
     private User firstUser;
 
     @ManyToOne
-    @JoinColumn(name = "second_id",referencedColumnName = "id")
+    @JoinColumn(name = "second_id", referencedColumnName = "id")
     private User secondUser;
 }

@@ -20,6 +20,7 @@ public class RestExceptionHandler {
     private ResponseEntity<String> handleException(UserNotFoundException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
+
     @ExceptionHandler
     private ResponseEntity<String> handleException(UserNotCreatedException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);

@@ -159,7 +159,7 @@ public class UserService {
     }
 
 
-    public List<User> getMyFriends(){
+    public List<User> getMyFriends() {
         int id = getCurrentUser().getId();
         List<User> friends = new ArrayList<>(friendRepository.getFriendsByFirstUserId(id).stream()
                 .map(Friend::getSecondUser)
@@ -169,7 +169,7 @@ public class UserService {
         return friends;
     }
 
-    public List<User> getFriends(String userLogin){
+    public List<User> getFriends(String userLogin) {
         User user = userRepository.findUserByLogin(userLogin).orElseThrow();
         if (user.getHideFriends()) {
             throw new BadCredentialsException("user hide this opportunity");
@@ -181,15 +181,16 @@ public class UserService {
         List<User> friends = friendRepository.getFriendsByFirstUserIdAndSecondUserId(id, id1).stream()
                 .map(Friend::getSecondUser)
                 .collect(Collectors.toList());
-        friends.addAll(friendRepository.getFriendsByFirstUserIdAndSecondUserId(id1,id).stream()
+        friends.addAll(friendRepository.getFriendsByFirstUserIdAndSecondUserId(id1, id).stream()
                 .map(Friend::getFirstUser).toList());
         return friends;
     }
-    public boolean areFriends(String firstUserLogin, String secondUserLogin){
+
+    public boolean areFriends(String firstUserLogin, String secondUserLogin) {
         int id = userRepository.findUserByLogin(firstUserLogin).orElseThrow().getId();
         int id1 = userRepository.findUserByLogin(secondUserLogin).orElseThrow().getId();
-        return !(friendRepository.getFriendsByFirstUserIdAndSecondUserId(id,id1).isEmpty() &&
-                 friendRepository.getFriendsByFirstUserIdAndSecondUserId(id1,id).isEmpty());
+        return !(friendRepository.getFriendsByFirstUserIdAndSecondUserId(id, id1).isEmpty() &&
+                friendRepository.getFriendsByFirstUserIdAndSecondUserId(id1, id).isEmpty());
 
     }
 

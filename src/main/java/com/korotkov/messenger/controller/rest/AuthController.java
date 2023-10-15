@@ -52,14 +52,14 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<HttpStatus> registration(@RequestBody @Valid RegistrationRequest user,
-                                                      BindingResult bindingResult) {
+                                                   BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new UserNotCreatedException(bindingResult.getFieldError().getField() + " " + bindingResult.getFieldError().getDefaultMessage());
         }
 
         String token = registrationService.register(modelMapper.map(user, EmailUser.class));
 
-        mailSenderService.send(user.getEmail(), "ghsf","http://localhost:8080/activate?t=" + token);
+        mailSenderService.send(user.getEmail(), "Регистрация", "http://localhost:8080/activate?t=" + token);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -67,11 +67,10 @@ public class AuthController {
     @GetMapping("/activate")
     public ResponseEntity<HttpStatus> activate(@RequestParam(value = "t") String token,
                                                @RequestParam(value = "is-in-ban", required = false) Boolean isInBan,
-                                               @Email @RequestParam(value = "email", required = false) String email){
-        registrationService.activate(token,isInBan,email);
+                                               @Email @RequestParam(value = "email", required = false) String email) {
+        registrationService.activate(token, isInBan, email);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 
 
     @PostMapping("/login")
@@ -100,7 +99,7 @@ public class AuthController {
     }
 
     @DeleteMapping("/logout")
-    public ResponseEntity<HttpStatus> logout(@RequestHeader(name = "Authorization") String token){
+    public ResponseEntity<HttpStatus> logout(@RequestHeader(name = "Authorization") String token) {
         jwtService.invalidateToken(token);
         return new ResponseEntity<>(HttpStatus.OK);
     }
