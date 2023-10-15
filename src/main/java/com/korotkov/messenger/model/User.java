@@ -43,5 +43,11 @@ public class User {
     @Column(name = "hide_friends")
     private Boolean hideFriends;
 
+    public void setOnlyFriends(Boolean onlyFriends) {
+        isOnlyFriends = onlyFriends;
+    }
 
+    public void setHideFriends(Boolean hideFriends) {
+        this.hideFriends = hideFriends;
+    }
 }

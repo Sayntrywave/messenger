@@ -78,11 +78,13 @@ public class UserService {
             mailSenderService.send(userToBeUpdated.getEmail(), "Вернуть аккаунт", "http://localhost:8080/activate?t=" + token + "&is-in-ban=" + "false");
         }
 
-        //todo send to email activate link
-
         String name = user.getName();
         if (name != null && !name.isEmpty()) {
             userToBeUpdated.setName(name);
+        }
+        String surname = user.getSurname();
+        if (surname != null && !surname.isEmpty()) {
+            userToBeUpdated.setSurname(surname);
         }
         String email = user.getEmail();
         if (email != null && !email.isEmpty()) {
@@ -112,9 +114,9 @@ public class UserService {
         if (hideFriends != null) {
             userToBeUpdated.setHideFriends(hideFriends);
         }
-        Boolean isOnlyFiends = user.getIsOnlyFriends();
-        if (isOnlyFiends != null) {
-            userToBeUpdated.setHideFriends(isOnlyFiends);
+        Boolean isOnlyFriends = user.getIsOnlyFriends();
+        if (isOnlyFriends != null) {
+            userToBeUpdated.setOnlyFriends(isOnlyFriends);
         }
 
         save(userToBeUpdated);

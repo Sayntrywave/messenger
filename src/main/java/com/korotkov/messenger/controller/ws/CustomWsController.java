@@ -5,7 +5,6 @@ import com.korotkov.messenger.service.MessageService;
 import com.korotkov.messenger.util.UserNotFoundException;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -26,7 +25,7 @@ public class CustomWsController {
         this.messageService = messageService;
     }
 
-    @MessageMapping("/chat") // Defines the endpoint for receiving messages
+    @MessageMapping("/chat")
     public void sendMessage(MessageDtoRequest message) {
 
         try {

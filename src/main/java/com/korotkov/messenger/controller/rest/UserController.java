@@ -63,7 +63,6 @@ public class UserController {
 
     @DeleteMapping("/user/delete")
     public ResponseEntity<HttpStatus> deleteUser() {
-
         userService.delete();
 
         return new ResponseEntity<>(HttpStatus.OK);
@@ -105,7 +104,6 @@ public class UserController {
         } else {
             friends = userService.getMyFriends();
         }
-
 
         return new ResponseEntity<>(friends.stream().
                 map(user -> modelMapper.

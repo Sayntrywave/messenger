@@ -6,12 +6,18 @@ spring:
     password: ${DB_PASS}
     url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
   mail:
-    host: smtp.mail.ru
-    port: 465
-    username: nikitakor2003@mail.ru
-    password: LeUefGYnnrZfVp87mjqE
-    protocol: smtps
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    protocol: ${MAIL_PROTOCOL}
     test-connection: true
+    properties:
+      swagger-ui:
+        path:/swagger-ui.html
+      api-docs:
+        path:/api
+
 
 server:
   error:
@@ -20,4 +26,4 @@ server:
 
 
 jwt:
-  secret: "1234"
+  secret: ${SECRET}

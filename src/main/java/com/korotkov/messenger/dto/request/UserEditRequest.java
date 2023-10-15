@@ -25,4 +25,8 @@ public class UserEditRequest {
 
     private Boolean isInBan;
 
+    private Boolean isOnlyFriends;
+
+    private Boolean hideFriends;
+
 }

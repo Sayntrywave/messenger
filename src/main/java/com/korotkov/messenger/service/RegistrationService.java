@@ -41,8 +41,6 @@ public class RegistrationService {
 
     @Transactional
     public String register(EmailUser user) {
-        //todo handle exception
-
         String login = user.getLogin();
         if (repository.existsUserByLogin(login)) {
             throw new UserNotCreatedException("login <" + login + "> has already been taken");
@@ -52,6 +50,8 @@ public class RegistrationService {
             throw new UserNotCreatedException("email <" + email + "> has already been taken");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setHideFriends(false);
+        user.setIsOnlyFriends(false);
         user.setIsInBan(false);
         emailRepository.save(user);
 
