@@ -160,6 +160,13 @@ public class UserService {
         throw new UserNotFoundException("user not found");
     }
 
+    public List<User> findAllFriendRequest(){
+        return friendRequestRepository.
+                findFriendRequestsByUserToId(getCurrentUser().getId()).stream()
+                .map(FriendRequest::getUserFrom)
+                .collect(Collectors.toList());
+    }
+
 
     public List<User> getMyFriends() {
         int id = getCurrentUser().getId();

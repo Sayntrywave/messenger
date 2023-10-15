@@ -69,7 +69,7 @@ public class UserController {
     }
 
     @GetMapping("/user/messages")
-    public ResponseEntity<List<MessageResponse>> getMessages(@RequestParam(value = "nick", required = false) String nickname) {
+    public ResponseEntity<List<MessageResponse>> getMessages(@RequestParam(value = "nick") String nickname) {
         List<Message> messagesFrom = messageService.getMessagesWith(userService.getCurrentUser().getId(), userService.findByLogin(nickname).getId());
 
         List<MessageResponse> collect = messagesFrom.stream()
@@ -89,10 +89,22 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+
+
     @PostMapping("/user/accept-friend-request")
     public ResponseEntity<HttpStatus> addFriendRequest(@RequestBody @Valid AcceptFriendRequest acceptFriendRequest) {
         userService.acceptFriendRequest(acceptFriendRequest.getFriendLogin(), acceptFriendRequest.isAccepted());
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/user/friend-requests")
+
+    public ResponseEntity<List<UserDtoResponse>> getFriendRequests(){
+        List<UserDtoResponse> collect = userService.findAllFriendRequest().stream()
+                .map(user -> modelMapper.
+                        map(user, UserDtoResponse.class))
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(collect,HttpStatus.OK);
     }
 
     @GetMapping("/user/friends")
