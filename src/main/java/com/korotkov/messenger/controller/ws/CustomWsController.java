@@ -1,15 +1,18 @@
 package com.korotkov.messenger.controller.ws;
 
+import com.korotkov.messenger.dto.request.MessageDtoRequest;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class CustomWsController {
 
     SimpMessagingTemplate messagingTemplate;
@@ -20,18 +23,16 @@ public class CustomWsController {
     }
 
     @MessageMapping("/chat") // Defines the endpoint for receiving messages
-    public String sendMessage(Message message) {
+    public void sendMessage(MessageDtoRequest message) {
         // Handle the incoming message and create a response
-
-        sendMessage("/topic/messages", "", "1234");
-
         System.out.println("ОТПРАВИЛ");
-        return "1234";
-    }
+        sendMessage("/topic/messages", message);
 
-    private void sendMessage(String destination, String sessionId, String message) {
+    }
+    private void sendMessage(String destination, MessageDtoRequest message) {
+
         messagingTemplate.convertAndSend(
-                destination, message
+                destination,message
         );
     }
 }

@@ -1,6 +1,7 @@
-package com.korotkov.messenger;
+package com.korotkov.messenger.client;
 
 import com.korotkov.messenger.dto.request.MessageDtoRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
@@ -8,30 +9,29 @@ import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
 
 import java.lang.reflect.Type;
 
-
+@Slf4j
 public class MySessionHandler extends StompSessionHandlerAdapter {
     @Override
     public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
         session.subscribe("/topic/messages", this);
-        System.out.println(321);
+        MessageDtoRequest messageDtoRequest = new MessageDtoRequest("nikitos","i'm here");
+        session.send("/chat", messageDtoRequest);
+        System.out.println("hello");
+        log.info("New session: {}", session.getSessionId());
     }
 
     @Override
     public void handleException(StompSession session, StompCommand command, StompHeaders headers, byte[] payload, Throwable exception) {
-        System.out.println(123);
         exception.printStackTrace();
     }
 
     @Override
     public Type getPayloadType(StompHeaders headers) {
-        System.out.println(123);
         return MessageDtoRequest.class;
     }
 
     @Override
     public void handleFrame(StompHeaders headers, Object payload) {
-
-        System.out.println("Я ПОЛУЧИЛ");
-        System.out.println(payload);
+        log.info("Received: {}", ((MessageDtoRequest) payload).getMessage());
     }
 }

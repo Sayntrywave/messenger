@@ -12,17 +12,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public static final String TOPIC_DESTINATION_PREFIX = "/topic";
     public static final String REGISTRY = "/ws";
 
-//    @Override
-//    public void registerStompEndpoints(StompEndpointRegistry registry) {
-//        registry.addEndpoint(REGISTRY)
-//                .withSockJS();
-//    }
-//
-//    @Override
-//    public void configureMessageBroker(MessageBrokerRegistry config) {
-//        config.enableSimpleBroker(TOPIC_DESTINATION_PREFIX);
-//    }
-
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
         config.enableSimpleBroker(TOPIC_DESTINATION_PREFIX);
@@ -30,6 +19,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint(REGISTRY).withSockJS();
+        registry.addEndpoint(REGISTRY);
     }
 }
