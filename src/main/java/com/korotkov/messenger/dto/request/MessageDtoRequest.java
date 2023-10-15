@@ -11,6 +11,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @AllArgsConstructor
 public class MessageDtoRequest {
-    String nickname;
+    String from;
+    String to;
     String message;
 }

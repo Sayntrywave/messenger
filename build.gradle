@@ -28,6 +28,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
     implementation 'org.springframework.security:spring-security-messaging'
 
     implementation("com.auth0:java-jwt:4.3.0")

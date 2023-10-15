@@ -102,7 +102,7 @@ public class WebSocketTests {
 
         String wsUrl = "ws://127.0.0.1:" + port + WebSocketConfig.REGISTRY;
 
-        stompSession.send("/chat", new MessageDtoRequest("nikitos","123"));
+//        stompSession.send("/chat", new MessageDtoRequest("nikitos","123"));
 //        stompSession.send("/chat", "1234");
 
     }

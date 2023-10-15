@@ -1,6 +1,7 @@
 package com.korotkov.messenger.security;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.korotkov.messenger.service.JWTService;
 import com.korotkov.messenger.service.MyUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -18,12 +19,12 @@ import java.io.IOException;
 @Component
 public class JWTFilter extends OncePerRequestFilter {
 
-    private final JWTUtil jwtUtil;
+    private final JWTService jwtService;
     private final MyUserDetailsService userService;
 
     @Autowired
-    public JWTFilter(JWTUtil jwtUtil, MyUserDetailsService userService) {
-        this.jwtUtil = jwtUtil;
+    public JWTFilter(JWTService jwtService, MyUserDetailsService userService) {
+        this.jwtService = jwtService;
         this.userService = userService;
     }
 
@@ -37,7 +38,7 @@ public class JWTFilter extends OncePerRequestFilter {
                         "Invalid JWT Token in Bearer Header");
             } else {
                 try {
-                    String username = jwtUtil.validateTokenAndRetrieveClaim(authHeader);
+                    String username = jwtService.validateTokenAndRetrieveClaim(authHeader);
 
                     UserDetails userDetails = userService.loadUserByUsername(username);
 
@@ -54,9 +55,9 @@ public class JWTFilter extends OncePerRequestFilter {
                         SecurityContextHolder.getContext().setAuthentication(authToken);
                     }
                 } catch (JWTVerificationException exc) {
-                    SecurityContextHolder.createEmptyContext();
-                    httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST,
-                            "Invalid JWT Token");
+//                    SecurityContextHolder.createEmptyContext();
+//                    httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST,
+//                            "Invalid JWT Token");
                 }
             }
         }

@@ -30,7 +30,6 @@ import java.util.function.Supplier;
 
 @Configuration
 @EnableWebSecurity
-@EnableWebSocketSecurity
 public class SecurityConfig {
     private final MyUserDetailsService myUserDetailsService;
 
@@ -49,6 +48,7 @@ public class SecurityConfig {
         http
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
+                .logout(AbstractHttpConfigurer::disable)
                 .exceptionHandling(handlingConfigurer ->
                         handlingConfigurer.authenticationEntryPoint(
                                 (request, response, authException) ->
@@ -83,12 +83,6 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
-    }
-
-    @Bean
-    AuthorizationManager<Message<?>> messageAuthorizationManager(MessageMatcherDelegatingAuthorizationManager.Builder messages) {
-        return messages.anyMessage().permitAll().build();
-//        return (AuthorizationManager) (authentication, object) -> new AuthorizationDecision(true);
     }
 
 

@@ -5,6 +5,15 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASS}
     url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+  mail:
+    host: smtp.mail.ru
+    port: 465
+    username: nikitakor2003@mail.ru
+    password: LeUefGYnnrZfVp87mjqE
+    protocol: smtps
+    test-connection: true
+
+
 
 jwt:
   secret: "1234"

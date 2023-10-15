@@ -43,9 +43,9 @@ public class ServiceClient {
 
         RestTemplate restTemplate = new RestTemplate();
         HashMap<String, String> map = new HashMap<>();
-        String nickname = "nikitos";
+        String nickname = args[0];
         map.put("login", nickname);
-        map.put("password","qwerty");
+        map.put("password", args[1]);
 
         HttpEntity<Object> objectHttpEntity = new HttpEntity<>(map);
 
@@ -56,10 +56,14 @@ public class ServiceClient {
         URI uri = new URI(url);
         StompSession stompSession = stompClient.connectAsync(uri, webSocketHttpHeaders, headers, sessionHandler).get();
 
-        stompSession.subscribe("/topic/messages/nikitos", sessionHandler);
-        MessageDtoRequest messageDtoRequest = new MessageDtoRequest(nickname,"i'm here");
-        stompSession.send("/chat", messageDtoRequest);
+        stompSession.subscribe("/topic/messages/" + nickname, sessionHandler);
+        Scanner scanner = new Scanner(System.in);
 
-        new Scanner(System.in).nextLine(); //Don't close immediately.
+        while (true){
+            String to = scanner.next();
+            String message = scanner.next();
+            MessageDtoRequest messageDtoRequest = new MessageDtoRequest(nickname,to,message);
+            stompSession.send("/chat", messageDtoRequest);
+        }
     }
 }

@@ -1,8 +1,11 @@
 package com.korotkov.messenger.controller.rest;
 
 import com.korotkov.messenger.dto.request.UserEditRequest;
+import com.korotkov.messenger.dto.response.MessageResponse;
+import com.korotkov.messenger.model.Message;
 import com.korotkov.messenger.model.User;
-import com.korotkov.messenger.security.JWTUtil;
+import com.korotkov.messenger.service.JWTService;
+import com.korotkov.messenger.service.MessageService;
 import com.korotkov.messenger.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -15,7 +18,9 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin
@@ -23,15 +28,17 @@ import java.util.Map;
 public class UserController {
 
     UserService userService;
+    MessageService messageService;
     ModelMapper modelMapper;
 
-    JWTUtil jwtUtil;
+    JWTService jwtService;
 
     @Autowired
-    public UserController(UserService userService, ModelMapper modelMapper, JWTUtil jwtUtil) {
+    public UserController(UserService userService, MessageService messageService, ModelMapper modelMapper, JWTService jwtService) {
         this.userService = userService;
+        this.messageService = messageService;
         this.modelMapper = modelMapper;
-        this.jwtUtil = jwtUtil;
+        this.jwtService = jwtService;
     }
 
     @PutMapping("/user/edit")
@@ -45,9 +52,24 @@ public class UserController {
 
         boolean update = userService.update(map);
         if (update) {
-            String token = jwtUtil.generateToken(userEditRequest.getLogin());
+            String token = jwtService.generateToken(userEditRequest.getLogin());
             return new ResponseEntity<>(Map.of("token", token), HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/user/messages")
+    public ResponseEntity<List<MessageResponse>> getMessages(@RequestParam(value = "nick",required = false) String nickname){
+        List<Message> messagesFrom = messageService.getMessagesWith(userService.getCurrentUser().getId(), userService.findByLogin(nickname).getId());
+
+        List<MessageResponse> collect = messagesFrom.stream()
+                .map(message ->
+                        MessageResponse.builder()
+                                .message(message.getMessage())
+                                .nicknameFrom(message.getUserFrom().getLogin())
+                                .nicknameTo(message.getUserTo().getLogin())
+                                .build())
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(collect,HttpStatus.OK);
     }
 }

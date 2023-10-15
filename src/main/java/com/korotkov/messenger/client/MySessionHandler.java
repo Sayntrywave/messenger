@@ -19,6 +19,6 @@ public class MySessionHandler extends StompSessionHandlerAdapter {
     @Override
     public void handleFrame(StompHeaders headers, Object payload) {
         MessageDtoRequest payload1 = (MessageDtoRequest) payload;
-        log.info("Received: {}", payload1.getMessage() + "from:" + payload1.getNickname());
+        System.out.println(payload1.getFrom() + ": " + payload1.getMessage());
     }
 }

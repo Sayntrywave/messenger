@@ -1,9 +1,10 @@
 package com.korotkov.messenger.controller.ws;
 
 import com.korotkov.messenger.dto.request.MessageDtoRequest;
-import com.korotkov.messenger.service.UserService;
+import com.korotkov.messenger.service.MessageService;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -15,26 +16,20 @@ public class CustomWsController {
 
     SimpMessagingTemplate messagingTemplate;
 
-    UserService userService;
-
+    MessageService messageService;
+    ModelMapper modelMapper;
     @Autowired
-    public CustomWsController(SimpMessagingTemplate messagingTemplate, UserService userService) {
+    public CustomWsController(SimpMessagingTemplate messagingTemplate, MessageService messageService, ModelMapper modelMapper) {
         this.messagingTemplate = messagingTemplate;
-        this.userService = userService;
+        this.messageService = messageService;
+        this.modelMapper = modelMapper;
     }
 
     @MessageMapping("/chat") // Defines the endpoint for receiving messages
     public void sendMessage(MessageDtoRequest message) {
 
-        // Handle the incoming message and create a response
-        System.out.println("ОТПРАВИЛ");
-
-//        String nickname = userService.getCurrentUser().getLogin();
-
-//        message.setNickname(nickname);
-
-        sendMessage("/topic/messages/" + message.getNickname(), message);
-
+        sendMessage("/topic/messages/" + message.getTo(), message);
+        messageService.save(message);
     }
     private void sendMessage(String destination, MessageDtoRequest message) {
 
