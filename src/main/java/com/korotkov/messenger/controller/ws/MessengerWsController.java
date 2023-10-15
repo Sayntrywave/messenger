@@ -13,14 +13,14 @@ import org.springframework.stereotype.Controller;
 
 @Controller
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class CustomWsController {
+public class MessengerWsController {
 
     SimpMessagingTemplate messagingTemplate;
 
     MessageService messageService;
 
     @Autowired
-    public CustomWsController(SimpMessagingTemplate messagingTemplate, MessageService messageService) {
+    public MessengerWsController(SimpMessagingTemplate messagingTemplate, MessageService messageService) {
         this.messagingTemplate = messagingTemplate;
         this.messageService = messageService;
     }
