@@ -1,7 +1,10 @@
 package com.korotkov.messenger.controller.rest;
 
+import com.korotkov.messenger.dto.request.AcceptFriendRequest;
+import com.korotkov.messenger.dto.request.FriendDtoRequest;
 import com.korotkov.messenger.dto.request.UserEditRequest;
 import com.korotkov.messenger.dto.response.MessageResponse;
+import com.korotkov.messenger.dto.response.UserDtoResponse;
 import com.korotkov.messenger.model.Message;
 import com.korotkov.messenger.model.User;
 import com.korotkov.messenger.service.JWTService;
@@ -79,5 +82,33 @@ public class UserController {
                                 .build())
                 .collect(Collectors.toList());
         return new ResponseEntity<>(collect,HttpStatus.OK);
+    }
+
+    @PostMapping("/user/add-friend-request")
+    public ResponseEntity<HttpStatus> addFriendRequest(@RequestBody @Valid FriendDtoRequest friendDtoRequest){
+        userService.addFriendRequest(friendDtoRequest.getFriendLogin());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @PostMapping("/user/accept-friend-request")
+    public ResponseEntity<HttpStatus> addFriendRequest(@RequestBody @Valid AcceptFriendRequest acceptFriendRequest){
+        userService.acceptFriendRequest(acceptFriendRequest.getFriendLogin(), acceptFriendRequest.isAccepted());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/user/friends")
+    public ResponseEntity<List<UserDtoResponse>> getFriends(@RequestParam(value = "nick",required = false) String nickname){
+        List<User> friends;
+
+        if(nickname != null){
+            friends = userService.getFriends(nickname);
+        }else {
+            friends = userService.getMyFriends();
+        }
+
+
+        return new ResponseEntity<>(friends.stream().
+                map(user -> modelMapper.
+                        map(user, UserDtoResponse.class))
+                .toList(),HttpStatus.OK);
     }
 }

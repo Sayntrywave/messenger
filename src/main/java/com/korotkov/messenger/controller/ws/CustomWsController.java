@@ -9,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Controller;
 
 @Controller
@@ -32,7 +33,7 @@ public class CustomWsController {
         try {
             messageService.save(message);
             sendMessage("/topic/messages/" + message.getTo(), message);
-        }catch (UserNotFoundException e){
+        }catch (UserNotFoundException | BadCredentialsException e){
             message.setMessage(e.getMessage());
             message.setTo(message.getFrom());
             message.setFrom("server");

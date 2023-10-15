@@ -9,6 +9,7 @@ import com.korotkov.messenger.util.UserNotFoundException;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,10 +23,13 @@ public class MessageService {
     MessageRepository messageRepository;
     UserRepository userRepository;
 
+    UserService userService;
+
     @Autowired
-    public MessageService(MessageRepository messageRepository, UserRepository userRepository) {
+    public MessageService(MessageRepository messageRepository, UserRepository userRepository, UserService userService) {
         this.messageRepository = messageRepository;
         this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     public List<Message> getMessagesWith(int userId, int userFromId) {
@@ -42,6 +46,11 @@ public class MessageService {
         User userFrom = userRepository.findUserByLogin(from).orElseThrow(() -> new UserNotFoundException("can't find user " + from));
         String to = message.getTo();
         User userTo = userRepository.findUserByLogin(to).orElseThrow(() -> new UserNotFoundException("can't find user " + to));
+
+
+        if (userTo.getIsOnlyFriends() && !userService.areFriends(userFrom.getLogin(),userTo.getLogin())) {
+            throw new BadCredentialsException("this user can receive messages only from friends");
+        }
 
         message1.setUserFrom(userFrom);
         message1.setUserTo(userTo);

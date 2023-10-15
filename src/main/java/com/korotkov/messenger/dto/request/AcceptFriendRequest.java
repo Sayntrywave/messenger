@@ -1,8 +1,7 @@
 package com.korotkov.messenger.dto.request;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -10,13 +9,9 @@ import lombok.experimental.FieldDefaults;
 @Data
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@AllArgsConstructor
-public class MessageDtoRequest {
+public class AcceptFriendRequest {
+    @NotEmpty
+    String friendLogin;
 
-    @NotNull
-    String from;
-    @NotNull
-    String to;
-    @NotNull
-    String message;
+    boolean accepted;
 }

@@ -60,7 +60,7 @@ public class ServiceClient {
 
         while (true){
             String to = scanner.next();
-            String message = scanner.next();
+            String message = scanner.nextLine();
             MessageDtoRequest messageDtoRequest = new MessageDtoRequest(nickname,to,message);
             stompSession.send("/chat", messageDtoRequest);
         }

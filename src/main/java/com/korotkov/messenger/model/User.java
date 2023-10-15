@@ -18,6 +18,10 @@ public class User {
     @Column(name = "id")
     private int id;
 
+    @Column(name = "surname")
+    private String surname;
+
+
     @Column(name = "name")
     private String name;
 
@@ -32,6 +36,14 @@ public class User {
 
     @Column(name = "is_in_ban")
     private Boolean isInBan;
+
+    @Column(name = "is_only_friends")
+    private Boolean isOnlyFriends;
+
+    @Column(name = "hide_friends")
+    private Boolean hideFriends;
+
+
 
 
 }

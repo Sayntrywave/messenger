@@ -15,6 +15,10 @@ import lombok.experimental.FieldDefaults;
 public class RegistrationRequest {
     @NotEmpty
     String name;
+
+    @NotEmpty
+    String surname;
+
     @Email
     String email;
     @Size(min = 1, max = 30, message = "your login size should be in range(1,30)")
