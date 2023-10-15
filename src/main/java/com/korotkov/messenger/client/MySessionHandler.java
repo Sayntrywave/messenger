@@ -12,26 +12,13 @@ import java.lang.reflect.Type;
 @Slf4j
 public class MySessionHandler extends StompSessionHandlerAdapter {
     @Override
-    public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
-        session.subscribe("/topic/messages/nikitos", this);
-        MessageDtoRequest messageDtoRequest = new MessageDtoRequest("nikitos","i'm here");
-        session.send("/chat", messageDtoRequest);
-        System.out.println("hello");
-        log.info("New session: {}", session.getSessionId());
-    }
-
-    @Override
-    public void handleException(StompSession session, StompCommand command, StompHeaders headers, byte[] payload, Throwable exception) {
-        exception.printStackTrace();
-    }
-
-    @Override
     public Type getPayloadType(StompHeaders headers) {
         return MessageDtoRequest.class;
     }
 
     @Override
     public void handleFrame(StompHeaders headers, Object payload) {
-        log.info("Received: {}", ((MessageDtoRequest) payload).getMessage());
+        MessageDtoRequest payload1 = (MessageDtoRequest) payload;
+        log.info("Received: {}", payload1.getMessage() + "from:" + payload1.getNickname());
     }
 }

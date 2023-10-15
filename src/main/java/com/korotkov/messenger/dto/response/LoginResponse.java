@@ -1,5 +1,6 @@
 package com.korotkov.messenger.dto.response;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

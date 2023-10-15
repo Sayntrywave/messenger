@@ -34,7 +34,6 @@ public class UserController {
         this.jwtUtil = jwtUtil;
     }
 
-
     @PutMapping("/user/edit")
     public ResponseEntity<Map<String, String>> editUser(@RequestBody @Valid UserEditRequest userEditRequest,
                                                         BindingResult bindingResult) {
