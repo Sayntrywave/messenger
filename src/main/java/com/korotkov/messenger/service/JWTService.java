@@ -41,22 +41,12 @@ public class JWTService {
     public String generateToken(String username) {
         return generateToken(username,"username",60);
     }
+    public String generateToken(String claim, String claimName) {
+        return generateToken(claim,claimName,60*24);
+    }
 
     private String generateToken(String claim, String claimName, int expireIn) {
         Date expirationDate = Date.from(ZonedDateTime.now().plusMinutes(expireIn).toInstant());
-
-
-/* String sign = JWT.create()
-                .withSubject("User details")
-                .withClaim("username", username)
-                .withIssuedAt(new Date())
-                .withIssuer("nikita")
-                .withExpiresAt(expirationDate)
-                .sign(Algorithm.HMAC256(secret));
-        tokenRepository.save(Token.builder()
-                .token(sign)
-                .isExpired(false)
-                .build());*/
         String sign = JWT.create()
                 .withSubject("User details")
                 .withClaim(claimName, claim)
@@ -79,6 +69,15 @@ public class JWTService {
         }
 
         return jwt.getClaim("username").asString();
+    }
+    public String validateTokenAndRetrieveClaim(String stringToken, String claimName){
+        Token token = tokenRepository.getTokenByToken(stringToken).orElseThrow(() -> new JWTVerificationException("такого токена не существует"));
+        DecodedJWT jwt = verifier.verify(stringToken);
+        if(token.getIsExpired()){
+            throw new TokenExpiredException("Токен невалидный", jwt.getExpiresAt().toInstant());
+        }
+
+        return jwt.getClaim(claimName).asString();
     }
 
     public void invalidateToken(String stringToken){

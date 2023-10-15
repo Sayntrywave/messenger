@@ -57,7 +57,7 @@ public class SecurityConfig {
                 )
 
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/login", "/register", "/error","/ws").permitAll()
+                        .requestMatchers("/login", "/register", "/error","/activate").permitAll()
                         .anyRequest().hasRole("USER"))
 //                        .anyRequest().permitAll())
                 .sessionManagement(httpSecuritySessionManagementConfigurer ->

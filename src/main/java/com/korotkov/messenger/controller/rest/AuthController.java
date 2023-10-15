@@ -3,6 +3,7 @@ package com.korotkov.messenger.controller.rest;
 import com.korotkov.messenger.dto.request.AuthenticationRequest;
 import com.korotkov.messenger.dto.request.RegistrationRequest;
 import com.korotkov.messenger.dto.response.LoginResponse;
+import com.korotkov.messenger.model.EmailUser;
 import com.korotkov.messenger.model.User;
 import com.korotkov.messenger.service.JWTService;
 import com.korotkov.messenger.service.MailSenderService;
@@ -49,22 +50,27 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<LoginResponse> registration(@RequestBody @Valid RegistrationRequest user,
+    public ResponseEntity<HttpStatus> registration(@RequestBody @Valid RegistrationRequest user,
                                                       BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new UserNotCreatedException(bindingResult.getFieldError().getField() + " " + bindingResult.getFieldError().getDefaultMessage());
         }
 
-//        registrationService.register(modelMapper.map(user, User.class));
+        String token = registrationService.register(modelMapper.map(user, EmailUser.class));
 
-//        User currentUser = userService.findByLogin(user.getLogin());
-//
-//        String token = jwtService.generateToken(currentUser.getLogin());
-//        LoginResponse map = modelMapper.map(currentUser, LoginResponse.class);
-//        map.setToken(token);
-        mailSenderService.send("Sayntrywave@yandex.ru","ghsf","1234");
-        return new ResponseEntity<>(new LoginResponse(), HttpStatus.OK);
+        mailSenderService.send(user.getEmail(), "ghsf","http://localhost:8080/activate?t=" + token);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
+
+
+    @GetMapping("/activate")
+    public ResponseEntity<HttpStatus> activate(@RequestParam(value = "t") String token){
+        //        LoginResponse map = modelMapper.map(currentUser, LoginResponse.class);
+//        map.setToken(token);
+        registrationService.activate(token);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 
 
     @PostMapping("/login")
