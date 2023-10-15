@@ -2,6 +2,7 @@ package com.korotkov.messenger.controller.ws;
 
 import com.korotkov.messenger.dto.request.MessageDtoRequest;
 import com.korotkov.messenger.service.MessageService;
+import com.korotkov.messenger.util.UserNotFoundException;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
@@ -28,8 +29,15 @@ public class CustomWsController {
     @MessageMapping("/chat") // Defines the endpoint for receiving messages
     public void sendMessage(MessageDtoRequest message) {
 
-        sendMessage("/topic/messages/" + message.getTo(), message);
-        messageService.save(message);
+        try {
+            messageService.save(message);
+            sendMessage("/topic/messages/" + message.getTo(), message);
+        }catch (UserNotFoundException e){
+            message.setMessage(e.getMessage());
+            message.setTo(message.getFrom());
+            message.setFrom("server");
+            sendMessage("/topic/messages/" + message.getTo(),message);
+        }
     }
     private void sendMessage(String destination, MessageDtoRequest message) {
 

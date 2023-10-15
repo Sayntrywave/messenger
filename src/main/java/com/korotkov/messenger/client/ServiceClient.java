@@ -51,7 +51,6 @@ public class ServiceClient {
 
         String token = restTemplate.postForEntity("http://localhost:8080/login",objectHttpEntity,LoginResponse.class).getBody().getToken();;
 
-//        assert strings != null;
         webSocketHttpHeaders.add("Authorization",token);
         URI uri = new URI(url);
         StompSession stompSession = stompClient.connectAsync(uri, webSocketHttpHeaders, headers, sessionHandler).get();
