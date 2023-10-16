@@ -70,7 +70,43 @@ class UserControllerTestIT {
     }
 
     @Test
-    void getMessages() throws Exception {
+    void should_ReturnOneFriend() throws Exception {
+        makeFriendRequest();
+        acceptFriendRequest();
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.
+                get("/user/friends").
+                queryParam("nick", "n").
+                header("Authorization", token);
+
+        MvcResult mvcResult = this.mockMvc.perform(requestBuilder)
+                .andExpectAll(
+                        status().isOk()
+                ).andReturn();
+
+        String json = mvcResult.getResponse().getContentAsString();
+        ObjectMapper mapper = new ObjectMapper();
+        int size = mapper.readValue(json, ArrayList.class).size();
+        Assertions.assertEquals(1, size);
+
+        MockHttpServletRequestBuilder requestBuilder2 = MockMvcRequestBuilders.
+                get("/user/friends").
+                header("Authorization", token);
+
+        MvcResult mvcResult2 = this.mockMvc.perform(requestBuilder2)
+                .andExpectAll(
+                        status().isOk()
+                ).andReturn();
+
+        json = mvcResult2.getResponse().getContentAsString();
+        mapper = new ObjectMapper();
+        size = mapper.readValue(json, ArrayList.class).size();
+        Assertions.assertEquals(1, size);
+    }
+
+
+    @Test
+    void should_ReturnZeroMessages() throws Exception {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.
                 get("/user/messages").
                 queryParam("nick", "n").
@@ -87,13 +123,30 @@ class UserControllerTestIT {
         Assertions.assertEquals(0, size);
     }
 
+    private void makeFriendRequest() throws Exception {
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/user/add-friend-request")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", token)
+                .content("""
+                        {
+                            "friendLogin": "n"
+                        }
+                        """);
 
-    @Test
-    void getFriends() throws Exception {
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.
-                get("/user/friends").
-                queryParam("nick", "n").
-                header("Authorization", token);
+
+        this.mockMvc.perform(requestBuilder);
+    }
+
+    private void acceptFriendRequest() throws Exception {
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {
+                            "login": "n",
+                            "password": "qwerty"
+                        }
+                        """);
+
 
         MvcResult mvcResult = this.mockMvc.perform(requestBuilder)
                 .andExpectAll(
@@ -101,23 +154,24 @@ class UserControllerTestIT {
                 ).andReturn();
 
         String json = mvcResult.getResponse().getContentAsString();
-        ObjectMapper mapper = new ObjectMapper();
-        int size = mapper.readValue(json, ArrayList.class).size();
-        Assertions.assertEquals(0, size);
+        JSONObject jsonObject = new JSONObject(json);
+
+        String nToken = jsonObject.getString("token");
+
+        MockHttpServletRequestBuilder requestBuilder2 = MockMvcRequestBuilders.post("/user/accept-friend-request")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", nToken)
+                .content("""
+                        {
+                            "friendLogin": "nikitos",
+                            "accepted": true
+                        }
+                        """);
 
 
-        MockHttpServletRequestBuilder requestBuilder2 = MockMvcRequestBuilders.
-                get("/user/friends").
-                header("Authorization", token);
+        this.mockMvc.perform(requestBuilder2);
 
-        MvcResult mvcResult2 = this.mockMvc.perform(requestBuilder2)
-                .andExpectAll(
-                        status().isOk()
-                ).andReturn();
-
-        json = mvcResult2.getResponse().getContentAsString();
-        mapper = new ObjectMapper();
-        size = mapper.readValue(json, ArrayList.class).size();
-        Assertions.assertEquals(0, size);
     }
+
+
 }

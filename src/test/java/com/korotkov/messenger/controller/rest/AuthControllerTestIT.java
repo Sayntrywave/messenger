@@ -69,14 +69,14 @@ class AuthControllerTestIT {
 
 
     @Test
-    void login() {
+    void should_Login() {
         String login = jwtService.validateTokenAndRetrieveClaim(token);
 
         assertEquals("nikitos", login);
     }
 
     @Test
-    void logout() throws Exception {
+    void should_Logout() throws Exception {
         assertDoesNotThrow(() -> jwtService.getToken(token));
         Token tokenBefore = jwtService.getToken(token);
 
