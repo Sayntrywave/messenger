@@ -17,6 +17,11 @@ spring:
         path:/swagger-ui.html
       api-docs:
         path:/api
+  sql:
+    init:
+      mode: always
+
+
 
 
 server:

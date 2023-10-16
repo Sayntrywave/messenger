@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.Date;
 
@@ -36,6 +37,10 @@ public class JWTService {
         this.tokenRepository = tokenRepository;
     }
 
+    public Token getToken(String token) {
+        return tokenRepository.getTokenByToken(token).orElseThrow(() -> new JWTVerificationException("can't find this token"));
+    }
+
 
     public String generateToken(String username) {
         return generateToken(username, "username", 60);
@@ -50,7 +55,7 @@ public class JWTService {
         String sign = JWT.create()
                 .withSubject("User details")
                 .withClaim(claimName, claim)
-                .withIssuedAt(new Date())
+                .withIssuedAt(Instant.now())
                 .withIssuer("nikita")
                 .withExpiresAt(expirationDate)
                 .sign(Algorithm.HMAC256(secret));
@@ -82,7 +87,7 @@ public class JWTService {
     }
 
     public void invalidateToken(String stringToken) {
-        Token token = tokenRepository.getTokenByToken(stringToken).orElseThrow();
+        Token token = tokenRepository.getTokenByToken(stringToken).orElseThrow(() -> new JWTVerificationException("такого токена не существует"));
         token.setIsExpired(true);
         tokenRepository.save(token);
     }

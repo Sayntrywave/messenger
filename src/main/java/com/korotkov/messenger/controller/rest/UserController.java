@@ -90,21 +90,20 @@ public class UserController {
     }
 
 
-
     @PostMapping("/user/accept-friend-request")
-    public ResponseEntity<HttpStatus> addFriendRequest(@RequestBody @Valid AcceptFriendRequest acceptFriendRequest) {
+    public ResponseEntity<HttpStatus> acceptFriendRequest(@RequestBody @Valid AcceptFriendRequest acceptFriendRequest) {
         userService.acceptFriendRequest(acceptFriendRequest.getFriendLogin(), acceptFriendRequest.isAccepted());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/user/friend-requests")
 
-    public ResponseEntity<List<UserDtoResponse>> getFriendRequests(){
+    public ResponseEntity<List<UserDtoResponse>> getFriendRequests() {
         List<UserDtoResponse> collect = userService.findAllFriendRequest().stream()
                 .map(user -> modelMapper.
                         map(user, UserDtoResponse.class))
                 .collect(Collectors.toList());
-        return new ResponseEntity<>(collect,HttpStatus.OK);
+        return new ResponseEntity<>(collect, HttpStatus.OK);
     }
 
     @GetMapping("/user/friends")

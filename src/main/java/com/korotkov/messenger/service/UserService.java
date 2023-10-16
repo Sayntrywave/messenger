@@ -127,7 +127,9 @@ public class UserService {
     public void acceptFriendRequest(String friendLogin, boolean isAccepted) {
         User currentUser = getCurrentUser();
         User byLogin = findByLogin(friendLogin);
-        FriendRequest friendRequest = friendRequestRepository.findFriendRequestByUserFromIdAndUserToId(byLogin.getId(), currentUser.getId()).orElseThrow();
+        FriendRequest friendRequest = friendRequestRepository.
+                findFriendRequestByUserFromIdAndUserToId(byLogin.getId(), currentUser.getId())
+                .orElseThrow(() -> new BadCredentialsException("request not found"));
 
         if (isAccepted) {
             Friend entity = Friend.builder()
@@ -160,7 +162,7 @@ public class UserService {
         throw new UserNotFoundException("user not found");
     }
 
-    public List<User> findAllFriendRequest(){
+    public List<User> findAllFriendRequest() {
         return friendRequestRepository.
                 findFriendRequestsByUserToId(getCurrentUser().getId()).stream()
                 .map(FriendRequest::getUserFrom)
@@ -179,7 +181,7 @@ public class UserService {
     }
 
     public List<User> getFriends(String userLogin) {
-        User user = userRepository.findUserByLogin(userLogin).orElseThrow();
+        User user = userRepository.findUserByLogin(userLogin).orElseThrow(() -> new UserNotFoundException("user not found"));
         if (user.getHideFriends()) {
             throw new BadCredentialsException("user hide this opportunity");
         }
@@ -196,8 +198,8 @@ public class UserService {
     }
 
     public boolean areFriends(String firstUserLogin, String secondUserLogin) {
-        int id = userRepository.findUserByLogin(firstUserLogin).orElseThrow().getId();
-        int id1 = userRepository.findUserByLogin(secondUserLogin).orElseThrow().getId();
+        int id = userRepository.findUserByLogin(firstUserLogin).orElseThrow(() -> new UserNotFoundException("user not found")).getId();
+        int id1 = userRepository.findUserByLogin(secondUserLogin).orElseThrow(() -> new UserNotFoundException("user not found")).getId();
         return !(friendRepository.getFriendsByFirstUserIdAndSecondUserId(id, id1).isEmpty() &&
                 friendRepository.getFriendsByFirstUserIdAndSecondUserId(id1, id).isEmpty());
 

@@ -6,6 +6,7 @@ import com.korotkov.messenger.model.User;
 import com.korotkov.messenger.repository.EmailRepository;
 import com.korotkov.messenger.repository.UserRepository;
 import com.korotkov.messenger.util.UserNotCreatedException;
+import com.korotkov.messenger.util.UserNotFoundException;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
@@ -63,16 +64,20 @@ public class RegistrationService {
         String userEmail = jwtService.validateTokenAndRetrieveClaim(token, "email");
         if (isInBan == null && email == null) {
 
-            EmailUser emailUser = emailRepository.findEmailUserByEmail(userEmail).orElseThrow();
+            EmailUser emailUser = emailRepository.
+                    findEmailUserByEmail(userEmail)
+                    .orElseThrow(() -> new UserNotFoundException("user not found"));
             User map = modelMapper.map(emailUser, User.class);
             repository.save(map);
             emailRepository.delete(emailUser);
         } else if (isInBan != null) {
-            User user = repository.findUserByEmail(userEmail).orElseThrow();
+            User user = repository.findUserByEmail(userEmail)
+                    .orElseThrow(() -> new UserNotFoundException("user not found"));
             user.setIsInBan(isInBan);
             repository.save(user);
         } else {
-            User user = repository.findUserByEmail(userEmail).orElseThrow();
+            User user = repository.findUserByEmail(userEmail)
+                    .orElseThrow(() -> new UserNotFoundException("user not found"));
             user.setEmail(email);
             repository.save(user);
         }

@@ -12,6 +12,7 @@ import lombok.*;
 @ToString
 @Getter
 @Setter
+
 public class EmailUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -43,6 +43,7 @@ public class JWTFilter extends OncePerRequestFilter {
                     UserDetails userDetails = userService.loadUserByUsername(username);
 
                     if (!userDetails.isEnabled()) {
+
                         httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "stay in ban loser");
                     }
 
